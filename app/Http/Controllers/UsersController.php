@@ -24,6 +24,13 @@ class UsersController extends Controller
                 'email' => 'required|email|unique:users|max:255', // 不能为空  格式为email  唯一性验证
                 'password' => 'required|confirmed|min:6' //不能为空  密码匹配一致性  最小值
             ]);
-            return;
-        }
+
+        $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        ]);
+        session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
+        return redirect()->route('users.show', [$user]);
+}
 }
