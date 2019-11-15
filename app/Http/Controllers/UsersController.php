@@ -7,6 +7,12 @@ use App\Models\User;
 class UsersController extends Controller
 {
     //
+    public function __construct()
+    {
+        $this->middleware('auth',[
+            'except' => ['show','create','store'] //除了指定动作外,所有其他动作都必须登录用户才能访问
+        ]);
+    }
     public function create()
     {
         return view('users.create');
@@ -37,7 +43,8 @@ class UsersController extends Controller
 
     public function edit(User $user)
     {
-    return view('users.edit', compact('user'));
+        $this->authorize('update', $user);
+        return view('users.edit', compact('user'));
     }
 
     public function update(User $user, Request $request)
@@ -52,9 +59,9 @@ class UsersController extends Controller
         $data['password'] = bcrypt($request->password);
     }
     $user->update($data);
-    
+
     session()->flash('success', '个人资料更新成功！');
-    
+
     return redirect()->route('users.show', $user->id);
     }
 
