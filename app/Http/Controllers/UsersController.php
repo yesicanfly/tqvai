@@ -10,9 +10,16 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth',[
-            'except' => ['show','create','store'] //除了指定动作外,所有其他动作都必须登录用户才能访问
+            'except' => ['show','create','store','index'] //除了指定动作外,所有其他动作都必须登录用户才能访问
         ]);
     }
+
+    public function index()
+        {
+            $users = User::paginate(10); // 显示10页
+            return view('users.index', compact('users'));
+        }
+
     public function create()
     {
         return view('users.create');
@@ -36,7 +43,7 @@ class UsersController extends Controller
         'email' => $request->email,
         'password' => bcrypt($request->password),
         ]);
-        Auth::login($user);
+        
         session()->flash('success', '欢迎，您将在这里开启一段新的旅程~');
         return redirect()->route('users.show', [$user]);
 }
