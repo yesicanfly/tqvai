@@ -29,7 +29,8 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-    return view('users.show', compact('user')); //将用户数据与视图进行绑定
+    $statuses = $user->statuses()->orderBy('created_at', 'desc')->paginate(10);
+    return view('users.show', compact('user', 'statuses'));// 将用户数据和微博动态数据同时传递给用户个人页面的视图上
     }
 
     public function store(Request $request)    //依赖注入
